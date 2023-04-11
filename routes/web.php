@@ -29,5 +29,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->get('user', 'AuthController@user');
     $router->get('user/{user_id}', 'UserController@show');
+    $router->put('user/{user_id}', 'UserController@update');
 });
 
