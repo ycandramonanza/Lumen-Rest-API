@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -40,7 +41,7 @@ class AuthController extends BaseController
 
         $user = User::where('email', $email)->first();
 
-        if(Hash::check($password, $user->password)){
+        if($user && Hash::check($password, $user->password)){
             $api_token = base64_encode(Str::random(40));
 
             $user->update([
@@ -64,8 +65,18 @@ class AuthController extends BaseController
         }
     }
 
-    public function user()
+    public function logout()
     {
-        return 'Authenticated User';
+        Auth::logout();
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout Success!',
+            'data'  => ''
+        ], 201);
     }
+
+    // public function user()
+    // {
+    //     return 'Authenticated User';
+    // }
 }
