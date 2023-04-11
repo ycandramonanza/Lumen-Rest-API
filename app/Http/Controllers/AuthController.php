@@ -65,18 +65,30 @@ class AuthController extends BaseController
         }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout();
-        return response()->json([
-            'success' => true,
-            'message' => 'Logout Success!',
-            'data'  => ''
-        ], 201);
-    }
+        $email = $request->input('email');
 
-    // public function user()
-    // {
-    //     return 'Authenticated User';
-    // }
+        $user = User::where('email', $email)->first();
+
+        if($user){ 
+            $user->update([
+                'api_token' => NULL,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logout Success!',
+                'data'  => ''
+            ], 201);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Login Fail!',
+            'data'  => ''
+        ], 400);
+
+       
+    }
 }
