@@ -66,6 +66,25 @@ class UserController extends Controller
         ], 404);
     }
 
+    public function delete(Request $request, $user_id)
+    {
+        $user = User::where('user_id', $user_id)->first();
+        if($user){
+            $response = $this->checkAuth($request, $user);
+
+            if($response['success']){
+                $user->delete();
+                return response()->json($response, 200);
+            }
+        }
+    
+        return response()->json([
+            'success' => false,
+            'message' => 'User Not Found',
+            'data' => ''
+        ], 404);
+    }
+
     public function checkAuth($request, $user)
     {
         try {
