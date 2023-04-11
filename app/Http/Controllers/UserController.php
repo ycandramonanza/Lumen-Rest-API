@@ -22,8 +22,7 @@ class UserController extends Controller
         $user = User::find($user_id);
 
         if($user){
-            $response = $this->checkAuth($request, $user);
-
+            $response = $this->checkAuth($request, $user, 'User Found!');
             if($response['success']){
                 return response()->json($response, 200);
             }
@@ -47,8 +46,7 @@ class UserController extends Controller
         $user = User::where('user_id', $user_id)->first();
 
         if($user){
-                $response = $this->checkAuth($request, $user);
-
+                $response = $this->checkAuth($request, $user, 'Update Success!');
                 if($response['success']){
                     $user->update([
                         'name'  => $validate['name'],
@@ -70,7 +68,7 @@ class UserController extends Controller
     {
         $user = User::where('user_id', $user_id)->first();
         if($user){
-            $response = $this->checkAuth($request, $user);
+            $response = $this->checkAuth($request, $user, 'Delete Success!');
 
             if($response['success']){
                 $user->delete();
@@ -85,7 +83,7 @@ class UserController extends Controller
         ], 404);
     }
 
-    public function checkAuth($request, $user)
+    public function checkAuth($request, $user, $msg)
     {
         try {
             $header = $request->header('Authorization');
@@ -93,7 +91,7 @@ class UserController extends Controller
                 $apiToken = explode(' ', $request->header('Authorization'));
                 $apiToken = $apiToken[1];
                 if($apiToken === $user['api_token']){
-                    return ['success' => true, 'message' => 'User Found', 'data' => $user];
+                    return ['success' => true, 'message' => $msg, 'data' => $user];
                 }
             }
 
